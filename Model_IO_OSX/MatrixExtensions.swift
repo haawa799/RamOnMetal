@@ -12,13 +12,24 @@ import simd
 extension float4x4 {
   
   static func matrixFromPerspective(fieldOfView : Float, aspectRatio: Float, nearZ: Float, farZ: Float) -> float4x4 {
+
     
-    let yScale = 1 / tanf(fieldOfView * 0.5)
-    let xScale = yScale / aspectRatio
+//    float frustumDepth = farDist - nearDist;
+//    float oneOverDepth = 1 / frustumDepth;
+//    
+//    result[1][1] = 1 / tan(0.5f * fov);
+//    result[0][0] = (leftHanded ? 1 : -1 ) * result[1][1] / aspect;
+//    result[2][2] = farDist * oneOverDepth;
+//    result[3][2] = (-farDist * nearDist) * oneOverDepth;
+//    result[2][3] = 1;
+//    result[3][3] = 0;
+    
+    let frustumDepth = farZ - nearZ
+    let oneOverDepth = 1 / frustumDepth
     let q = farZ / (farZ - nearZ)
     
-    let column0 = float4(xScale, 0, 0, 0)
-    let column1 = float4(0, yScale, 0, 0)
+    let column0 = float4(0, 0, 0, 0)
+    let column1 = float4(0, 1 / tanf(0.5 * fieldOfView), 0, 0)
     let column2 = float4(0, 0, q, 1)
     let column3 = float4(0, 0, q * -nearZ, 0)
     let m = float4x4()
@@ -38,7 +49,7 @@ extension float4x4 {
   }
   
   static func makeScale(scale: float3) -> float4x4 {
-    return float4x4(diagonal: float4(scale.x, scale.y, scale.z, 1))
+    return float4x4(diagonal: float4(scale.x, scale.y, scale.z, scale.x))
   }
   
   mutating func scale(scale: Float) {

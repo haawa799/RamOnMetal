@@ -25,6 +25,8 @@ class ViewController: NSViewController, MTKViewDelegate {
   var scene: MyScene!
   var pipelineState: MTLRenderPipelineState!
   
+  var viewMatrix = Matrix4()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -43,10 +45,17 @@ class ViewController: NSViewController, MTKViewDelegate {
     let metalVertexDescriptor = MTLVertexDescriptor()
     if let attribute = metalVertexDescriptor.attributes[0] {
       attribute.format = MTLVertexFormat.Float3
+      attribute.offset = 0
       //        attribute.bufferIndex = 0
     }
+    if let attribute = metalVertexDescriptor.attributes[1] {
+      attribute.format = MTLVertexFormat.Float3
+      attribute.offset = sizeof(Float) * 3
+      //        attribute.bufferIndex = 0
+    }
+    
     if let layout = metalVertexDescriptor.layouts[0] {  // this zero correspons to  buffer index
-      layout.stride = sizeof(Float) * 3
+      layout.stride = sizeof(Float) * (3 + 3)
     }
     
     
@@ -57,6 +66,33 @@ class ViewController: NSViewController, MTKViewDelegate {
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = .BGRA8Unorm
     
     pipelineState = try! device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
+    
+    viewMatrix.translate(0.0, y: 0.0, z: -2)
+    scene.ram.rotationX = -Matrix4.degreesToRad(90)
+    scene.ram.rotationZ = -Matrix4.degreesToRad(45)
+  }
+  
+  
+  private var deltaX: Float = 0
+  private var deltaY: Float = 0
+  private var lastPanLocation = NSPoint(x: 0, y: 0)
+  let panSensivity: Float = 5.0
+  override func mouseDragged(theEvent: NSEvent) {
+    super.mouseDragged(theEvent)
+
+    let pointInWindow = theEvent.locationInWindow
+    
+    let xDelta = Float((lastPanLocation.x - pointInWindow.x)/self.view.bounds.width) * panSensivity
+    let yDelta = Float((lastPanLocation.y - pointInWindow.y)/self.view.bounds.height) * panSensivity
+    
+    print("x: \(xDelta)")
+    print("y: \(yDelta)")
+    print("")
+    
+    scene.ram.rotationZ -= yDelta
+    scene.ram.rotationY -= xDelta
+    
+    lastPanLocation = pointInWindow
   }
   
   
@@ -65,7 +101,7 @@ class ViewController: NSViewController, MTKViewDelegate {
   var inflightDrawablesSemaphore = dispatch_semaphore_create(3)
   
   func view(view: MTKView, willLayoutWithSize size: CGSize) {
-    let matrix = float4x4.matrixFromPerspective(65 * Float(M_PI / 180.0), aspectRatio: Float(size.width / size.height), nearZ: 0.1, farZ: 100)
+    let matrix = Matrix4.makePerspectiveViewAngle(Matrix4.degreesToRad(85.0), aspectRatio: Float(size.width / size.height), nearZ: 0.01, farZ: 100)
     scene.projectionMatrix = matrix
   }
   
@@ -79,9 +115,9 @@ class ViewController: NSViewController, MTKViewDelegate {
       dispatch_semaphore_wait(inflightDrawablesSemaphore, DISPATCH_TIME_FOREVER)
       
       if let drawable = view.currentDrawable {
-        scene.render(commandQ, renderPassDescriptor: renderPassDescriptor, pipelineState: pipelineState, drawable: drawable, parentMVMatrix: float4x4(0.0), completionBlock: { (buffer) -> Void in
+        scene.render(commandQ, renderPassDescriptor: renderPassDescriptor, pipelineState: pipelineState, drawable: drawable, parentMVMatrix: float4x4(0.0), viewMatrix: viewMatrix){ (buffer) -> Void in
           dispatch_semaphore_signal(self.inflightDrawablesSemaphore)
-        })
+        }
       }
     }
   }

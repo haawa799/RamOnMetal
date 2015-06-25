@@ -22,19 +22,24 @@ class Ram: Node {
     let modelIOVertexDesc = MDLVertexDescriptor()
     if let attribute = modelIOVertexDesc.attributes[0] as? MDLVertexAttribute {
       attribute.name = MDLVertexAttributePosition
+      attribute.offset = 0
+      attribute.format = MDLVertexFormat.Float3
+      //        attribute.bufferIndex = 0
+    }
+    if let attribute = modelIOVertexDesc.attributes[1] as? MDLVertexAttribute {
+      attribute.name = MDLVertexAttributeNormal
+      attribute.offset = sizeof(Float) * 3
       attribute.format = MDLVertexFormat.Float3
       //        attribute.bufferIndex = 0
     }
     if let layout = modelIOVertexDesc.layouts[0] as? MDLVertexBufferLayout {  // this zero correspons to  buffer index
-      layout.stride = sizeof(Float) * 3
+      layout.stride = sizeof(Float) * (3 + 3)
     }
     
     let url = NSBundle.mainBundle().URLForResource("ram", withExtension: "obj")!
     let asset = MDLAsset(URL: url, vertexDescriptor: modelIOVertexDesc, bufferAllocator: nil)
     
     metalKitMeshes = MTKMesh.meshesFromAsset(asset, device: device)
-    for mesh in metalKitMeshes {
-    }
   }
   
   override func render(renderEncoder: MTLRenderCommandEncoder) {

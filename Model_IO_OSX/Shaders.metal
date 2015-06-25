@@ -16,6 +16,7 @@ struct VertexOut {
 
 struct Vertex {
   float3 position [[attribute(0)]];
+  float3 normal   [[attribute(1)]];
 };
 
 struct Uniforms {
@@ -30,12 +31,11 @@ vertex VertexOut vertexShader(const Vertex vertexIn [[stage_in]],
   float4x4 projectionMatrix = uniformBuffer.projectionMatrix;
   float4x4 modelViewMatrix = uniformBuffer.modelViewMatrix;
   float3 position = vertexIn.position;
-  position.z = 5;
   
-  float4 fragmentPosition = modelViewMatrix * float4(position, 1.0);
+  float4 fragmentPosition = float4(position, 1.0);
   
   VertexOut vertexOut;
-  vertexOut.position = projectionMatrix * fragmentPosition;
+  vertexOut.position = projectionMatrix * modelViewMatrix * fragmentPosition;
   vertexOut.color = float4(1.0);
   return vertexOut;
 }

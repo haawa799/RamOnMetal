@@ -10,9 +10,12 @@ import MetalKit
 
 class MyScene: Scene {
   
+  var ram: Ram
+  
   override init(device: MTLDevice) {
+    ram = Ram(device: device)
     super.init(device: device)
-    children = [Ram(device: device)]
+    children = [ram]
   }
   
 }
