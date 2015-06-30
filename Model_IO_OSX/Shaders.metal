@@ -12,11 +12,16 @@ using namespace metal;
 struct VertexOut {
   float4 position [[position]];
   float4 color;
+  float  occlusion;
+  float3 normal;
+  float2 texCoords;
 };
 
 struct Vertex {
-  float3 position [[attribute(0)]];
-  float3 normal   [[attribute(1)]];
+  float3 position  [[attribute(0)]];
+  float  occlusion [[attribute(1)]];
+  float3 normal    [[attribute(2)]];
+  float2 texCoords [[attribute(3)]];
 };
 
 struct Uniforms {
@@ -37,11 +42,30 @@ vertex VertexOut vertexShader(const Vertex vertexIn [[stage_in]],
   VertexOut vertexOut;
   vertexOut.position = projectionMatrix * modelViewMatrix * fragmentPosition;
   vertexOut.color = float4(1.0);
+  vertexOut.occlusion = vertexIn.occlusion;
+  vertexOut.normal = vertexIn.normal;
+  vertexOut.texCoords = vertexIn.texCoords;
   return vertexOut;
 }
 
 
-fragment float4 fragmentShader(VertexOut interpolated [[stage_in]])
+fragment float4 fragmentShader(VertexOut interpolated [[stage_in]], texture2d<float>  tex2D     [[ texture(0) ]],
+                               // 4
+                               sampler           sampler2D [[ sampler(0) ]])
 {
-  return interpolated.color;
+  float3 lightDirection = normalize(float3(0.0, 0.0, 1.0));
+  float3 normal = normalize(interpolated.normal);
+  
+  //Get diffuse color
+  float diffuseFactor = max(-dot(normal,lightDirection),0.0);
+  float4 diffuseColor = {1.0,1.0,1.0,1.0};
+  for (int i = 0; i<3; i++)
+  {
+    diffuseColor[i] *= diffuseFactor * 1.0;
+  }
+  
+  float4 q = interpolated.color * interpolated.occlusion;
+  q.a = 1.0;
+  
+  return q;//tex2D.sample(sampler2D, interpolated.texCoords);
 }

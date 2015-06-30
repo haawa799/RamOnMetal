@@ -31,13 +31,19 @@ class Scene: NSObject, Transformable {
     children = [Node]()
   }
   
-  func render(commandQ: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, pipelineState: MTLRenderPipelineState, drawable: CAMetalDrawable, parentMVMatrix: float4x4, viewMatrix: Matrix4?, completionBlock: MTLCommandBufferHandler?) {
+  func render(commandQ: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, depthStencilState: MTLDepthStencilState?, pipelineState: MTLRenderPipelineState, drawable: CAMetalDrawable, parentMVMatrix: float4x4, viewMatrix: Matrix4?, completionBlock: MTLCommandBufferHandler?) {
+    
+    dispatch_semaphore_wait(bufferProvider.avaliableResourcesSemaphore, DISPATCH_TIME_FOREVER)
     
     renderPassDescriptor.colorAttachments[0].texture = drawable.texture
     let commandBuffer = commandQ.commandBuffer()
     let renderEncoder = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
     //
     renderEncoder.setRenderPipelineState(pipelineState)
+    if let depthStencilState = depthStencilState {
+      renderEncoder.setDepthStencilState(depthStencilState)
+    }
+    renderEncoder.setCullMode(MTLCullMode.Front)
     
     let sceneModelViewMatrix = modelMatrix()
     if let viewMatrix = viewMatrix {
@@ -53,9 +59,13 @@ class Scene: NSObject, Transformable {
     }
     
     renderEncoder.endEncoding()
-    if let completionBlock = completionBlock {
-      commandBuffer.addCompletedHandler(completionBlock)
-    }
+    commandBuffer.addCompletedHandler({ (buffer) -> Void in
+      dispatch_semaphore_signal(self.bufferProvider.avaliableResourcesSemaphore)
+      if let completionBlock = completionBlock {
+        completionBlock(buffer)
+      }
+    })
+    
     
     commandBuffer.presentDrawable(drawable)
     commandBuffer.commit()
