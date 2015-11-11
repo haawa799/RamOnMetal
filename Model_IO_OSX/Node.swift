@@ -45,7 +45,7 @@ class Node: NSObject, Transformable {
   var vertexBuffer: MTLBuffer?
   var vertexCount = 0
   
-  var metalKitMeshes = [MTKMesh]()
+  var metalKitMeshes = [AnyObject]()
   
   init(device: MTLDevice) {
     

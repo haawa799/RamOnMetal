@@ -24,6 +24,10 @@ class Scene: NSObject, Transformable {
   var children: [Node]
   var projectionMatrix = Matrix4()
   var bufferProvider: BufferProvider
+  
+  var useTexture = false
+  var useOcclusion = false
+  
   private var triangleVertexBuffer: MTLBuffer!
   
   init(device: MTLDevice) {
@@ -53,7 +57,7 @@ class Scene: NSObject, Transformable {
     for child in children {
       let modelViewMatrix = child.modelMatrix()
       modelViewMatrix.multiplyLeft(sceneModelViewMatrix)
-      let uniformsBuffer = bufferProvider.bufferWithMatrices(projectionMatrix, modelViewMatrix: modelViewMatrix)
+      let uniformsBuffer = bufferProvider.bufferWithMatrices(projectionMatrix, modelViewMatrix: modelViewMatrix, b0: useOcclusion, b1: useTexture)
       renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, atIndex: 1)
       child.render(renderEncoder)
     }
@@ -65,7 +69,6 @@ class Scene: NSObject, Transformable {
         completionBlock(buffer)
       }
     })
-    
     
     commandBuffer.presentDrawable(drawable)
     commandBuffer.commit()

@@ -21,7 +21,7 @@
 		4314CE691B2B858400010FFA /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4314CE611B2B858400010FFA /* Shaders.metal */; };
 		4359F47C1B372811000BF4A8 /* Matrix4.m in Sources */ = {isa = PBXBuildFile; fileRef = 4359F47B1B372811000BF4A8 /* Matrix4.m */; };
 		439B38451B35ED710069E2C0 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439B38441B35ED710069E2C0 /* BufferProvider.swift */; };
-		43D17CDE1B4298130079A691 /* char_ram_col.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 43D17CDC1B4298130079A691 /* char_ram_col.jpg */; };
+		43C34A441BF3533000898399 /* ram.png in Resources */ = {isa = PBXBuildFile; fileRef = 43C34A431BF3533000898399 /* ram.png */; };
 		43D17CDF1B4298130079A691 /* ram.obj in Resources */ = {isa = PBXBuildFile; fileRef = 43D17CDD1B4298130079A691 /* ram.obj */; };
 		43D17CE41B4298280079A691 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D17CE11B4298280079A691 /* AppDelegate.swift */; };
 		43D17CE51B4298280079A691 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43D17CE21B4298280079A691 /* Info.plist */; };
@@ -44,7 +44,7 @@
 		4359F47A1B372811000BF4A8 /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix4.h; sourceTree = "<group>"; };
 		4359F47B1B372811000BF4A8 /* Matrix4.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Matrix4.m; sourceTree = "<group>"; };
 		439B38441B35ED710069E2C0 /* BufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
-		43D17CDC1B4298130079A691 /* char_ram_col.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = char_ram_col.jpg; sourceTree = "<group>"; };
+		43C34A431BF3533000898399 /* ram.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ram.png; sourceTree = "<group>"; };
 		43D17CDD1B4298130079A691 /* ram.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ram.obj; sourceTree = "<group>"; };
 		43D17CE11B4298280079A691 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		43D17CE21B4298280079A691 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 		43D17CDB1B4298130079A691 /* Ram */ = {
 			isa = PBXGroup;
 			children = (
-				43D17CDC1B4298130079A691 /* char_ram_col.jpg */,
+				43C34A431BF3533000898399 /* ram.png */,
 				43D17CDD1B4298130079A691 /* ram.obj */,
 			);
 			path = Ram;
@@ -193,7 +193,7 @@
 				4314CE4A1B2B83D900010FFA /* Assets.xcassets in Resources */,
 				4314CE4D1B2B83D900010FFA /* Main.storyboard in Resources */,
 				43D17CE51B4298280079A691 /* Info.plist in Resources */,
-				43D17CDE1B4298130079A691 /* char_ram_col.jpg in Resources */,
+				43C34A441BF3533000898399 /* ram.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

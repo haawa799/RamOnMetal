@@ -118,14 +118,14 @@ class ViewController: NSViewController, MTKViewDelegate {
   
   var inflightDrawablesSemaphore = dispatch_semaphore_create(3)
   
-  func view(view: MTKView, willLayoutWithSize size: CGSize) {
+  func mtkView(view: MTKView, drawableSizeWillChange size: CGSize) {
     // Change projection matrix, based on window size
     let matrix = Matrix4.makePerspectiveViewAngle(Matrix4.degreesToRad(85.0), aspectRatio: Float(size.width / size.height), nearZ: 0.01, farZ: 100)
     scene.projectionMatrix = matrix
   }
   
   
-  func drawInView(view: MTKView) {
+  func drawInMTKView(view: MTKView) {
     if let renderPassDescriptor = view.currentRenderPassDescriptor {
       renderPassDescriptor.colorAttachments[0].loadAction = .Clear
       renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 1.0, green: 0.4, blue: 0.6, alpha: 1.0)
@@ -152,6 +152,8 @@ class ViewController: NSViewController, MTKViewDelegate {
   override func mouseDragged(theEvent: NSEvent) {
     super.mouseDragged(theEvent)
     
+    
+    
     let pointInWindow = theEvent.locationInWindow
     
     let xDelta = Float((lastPanLocation.x - pointInWindow.x)/self.view.bounds.width) * panSensivity
@@ -165,6 +167,18 @@ class ViewController: NSViewController, MTKViewDelegate {
     scene.ram.rotationY -= xDelta
     
     lastPanLocation = pointInWindow
+  }
+  
+}
+
+extension ViewController {
+  
+  @IBAction func occlusionSwitchValueChanged(sender: NSButton) {
+    scene.useOcclusion = sender.state != 0
+  }
+  
+  @IBAction func texturesSwitchValueChanged(sender: NSButton) {
+    scene.useTexture = sender.state != 0
   }
   
 }

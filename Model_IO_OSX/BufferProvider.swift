@@ -18,8 +18,10 @@ class BufferProvider: NSObject {
   static let floatsPerMatrix = 16
   static let numberOfMatrices = 2
   
+  static let boolSize = sizeof(Bool)
+  
   static var bufferSize: Int {
-    return matrixSize * numberOfMatrices
+    return (matrixSize * numberOfMatrices) + (16)
   }
   
   static var matrixSize: Int {
@@ -51,7 +53,7 @@ class BufferProvider: NSObject {
     }
   }
   
-  func bufferWithMatrices(projectionMatrix: Matrix4, modelViewMatrix: Matrix4) -> MTLBuffer {
+  func bufferWithMatrices(projectionMatrix: Matrix4, modelViewMatrix: Matrix4, b0: Bool, b1: Bool) -> MTLBuffer {
     
     let uniformBuffer = self.buffers[indexOfAvaliableBuffer++]
     if indexOfAvaliableBuffer == numberOfInflightBuffers {
@@ -61,6 +63,9 @@ class BufferProvider: NSObject {
     let size = BufferProvider.matrixSize
     memcpy(uniformBuffer.contents(), projectionMatrix.raw(), size)
     memcpy(uniformBuffer.contents() + size, modelViewMatrix.raw(), size)
+    
+    let params = [b0, b1]
+    memcpy(uniformBuffer.contents() + 2*size, params, BufferProvider.boolSize * params.count)
     
     return uniformBuffer
   }

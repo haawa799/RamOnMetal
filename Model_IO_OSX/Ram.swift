@@ -14,12 +14,12 @@ class Ram: Node {
   
   override init(device: MTLDevice) {
     textureLoader = MTKTextureLoader(device: device)
-    let path = NSBundle.mainBundle().pathForResource("char_ram_col", ofType: "jpg")!
+    let path = NSBundle.mainBundle().pathForResource("ram", ofType: "png")!
     let data = NSData(contentsOfFile: path)!
     samplerState = Ram.defaultSampler(device)
     super.init(device: device)
     
-    texture = try! textureLoader.textureWithData(data, options: nil)
+    texture = try! textureLoader.newTextureWithData(data, options: nil)
     load(device)
   }
   
@@ -60,7 +60,9 @@ class Ram: Node {
     }
     
     let url = NSBundle.mainBundle().URLForResource("ram", withExtension: "obj")!
-    let asset = MDLAsset(URL: url, vertexDescriptor: modelIOVertexDesc, bufferAllocator: nil)
+    
+    let allocator = MTKMeshBufferAllocator(device: device)
+    let asset = MDLAsset(URL: url, vertexDescriptor: modelIOVertexDesc, bufferAllocator: allocator)
     
     if let mesh = asset.objectAtIndex(0) as? MDLMesh {
       
@@ -73,7 +75,15 @@ class Ram: Node {
       mesh.generateAmbientOcclusionVertexColorsWithQuality(1.0, attenuationFactor: 0.1, objectsToConsider: [mesh], vertexAttributeNamed: MDLVertexAttributeOcclusionValue)
     }
     
-    metalKitMeshes = MTKMesh.meshesFromAsset(asset, device: device)
+    do {
+      metalKitMeshes = try MTKMesh.newMeshesFromAsset(asset, device: device, sourceMeshes: nil)
+      
+//      MTKMesh.new
+    } catch _ {
+      print("problm")
+    }
+    
+//    metalKitMeshes = try! MTKMesh.newMeshesFromAsset(asset, device: device, sourceMeshes: nil)//meshesFromAsset(asset, device: device)
     
   }
   
@@ -102,15 +112,20 @@ class Ram: Node {
   }
   
   override func render(renderEncoder: MTLRenderCommandEncoder) {
-    for mesh in metalKitMeshes {
-      if let vertexBuf = mesh.vertexBuffers.first {
-        renderEncoder.setVertexBuffer(vertexBuf.buffer, offset: vertexBuf.offset, atIndex: 0)
-        if let texture = texture {
-          renderEncoder.setFragmentTexture(texture, atIndex: 0)
-        }
-        renderEncoder.setFragmentSamplerState(samplerState, atIndex: 0)
-        for submesh in mesh.submeshes {
-          renderEncoder.drawIndexedPrimitives(submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
+    
+    guard metalKitMeshes.count != 0 else {return}
+    
+    for obj in metalKitMeshes {
+      if let mesh = obj as? MTKMesh {
+        if let vertexBuf = mesh.vertexBuffers.first {
+          renderEncoder.setVertexBuffer(vertexBuf.buffer, offset: vertexBuf.offset, atIndex: 0)
+          if let texture = texture {
+            renderEncoder.setFragmentTexture(texture, atIndex: 0)
+          }
+          renderEncoder.setFragmentSamplerState(samplerState, atIndex: 0)
+          for submesh in mesh.submeshes {
+            renderEncoder.drawIndexedPrimitives(submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
+          }
         }
       }
     }

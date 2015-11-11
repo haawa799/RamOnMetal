@@ -6,15 +6,25 @@
 //  Copyright © 2015 Andrew  K. All rights reserved.
 //
 
+//#include <metal_stdlib>
 #include <metal_stdlib>
+#include <simd/simd.h>
+#include <metal_texture>
+#include <metal_matrix>
+#include <metal_geometric>
+#include <metal_math>
+#include <metal_graphics>
+
 using namespace metal;
 
 struct VertexOut {
   float4 position [[position]];
   float4 color;
   float  occlusion;
-  float3 normal;
   float2 texCoords;
+  
+  bool occlusionEnabled;
+  bool textureEnabled;
 };
 
 struct Vertex {
@@ -27,11 +37,13 @@ struct Vertex {
 struct Uniforms {
   float4x4 projectionMatrix;
   float4x4 modelViewMatrix;
+  bool occlusionEnabled;
+  bool textureEnabled;
 };
 
-vertex VertexOut vertexShader(const Vertex vertexIn [[stage_in]],
-                              constant Uniforms& uniformBuffer [[buffer(1)]],
-                                unsigned        int        vid           [[vertex_id]])
+vertex VertexOut vertexShader(const    Vertex    vertexIn      [[stage_in]],
+                              constant Uniforms &uniformBuffer [[buffer(1)]],
+                              unsigned int       vid           [[vertex_id]])
 {
   float4x4 projectionMatrix = uniformBuffer.projectionMatrix;
   float4x4 modelViewMatrix = uniformBuffer.modelViewMatrix;
@@ -41,31 +53,28 @@ vertex VertexOut vertexShader(const Vertex vertexIn [[stage_in]],
   
   VertexOut vertexOut;
   vertexOut.position = projectionMatrix * modelViewMatrix * fragmentPosition;
-  vertexOut.color = float4(1.0);
   vertexOut.occlusion = vertexIn.occlusion;
-  vertexOut.normal = vertexIn.normal;
   vertexOut.texCoords = vertexIn.texCoords;
+  vertexOut.color = float4(1.0,1.0,1.0,1.0);
+  
+  vertexOut.occlusionEnabled = uniformBuffer.occlusionEnabled;
+  vertexOut.textureEnabled = uniformBuffer.textureEnabled;
+  
   return vertexOut;
 }
 
 
-fragment float4 fragmentShader(VertexOut interpolated [[stage_in]], texture2d<float>  tex2D     [[ texture(0) ]],
-                               // 4
-                               sampler           sampler2D [[ sampler(0) ]])
+fragment float4 fragmentShader(VertexOut         interpolated [[stage_in]],
+                               texture2d<float>  tex2D        [[texture(0)]],
+                               sampler           sampler2D    [[sampler(0)]])
 {
-  float3 lightDirection = normalize(float3(0.0, 0.0, 1.0));
-  float3 normal = normalize(interpolated.normal);
-  
-  //Get diffuse color
-  float diffuseFactor = max(-dot(normal,lightDirection),0.0);
-  float4 diffuseColor = {1.0,1.0,1.0,1.0};
-  for (int i = 0; i<3; i++)
-  {
-    diffuseColor[i] *= diffuseFactor * 1.0;
+  float4 finalColor = interpolated.color;
+  if (interpolated.occlusionEnabled) {
+    finalColor *= interpolated.occlusion;
+  }
+  if (interpolated.textureEnabled) {
+    finalColor *= tex2D.sample(sampler2D, interpolated.texCoords);
   }
   
-  float4 q = interpolated.color * interpolated.occlusion;
-  q.a = 1.0;
-  
-  return q;//tex2D.sample(sampler2D, interpolated.texCoords);
+  return finalColor;
 }
