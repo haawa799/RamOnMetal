@@ -11,124 +11,121 @@ import MetalKit
 import ModelIO
 
 class Ram: Node {
-  
-  override init(device: MTLDevice) {
-    textureLoader = MTKTextureLoader(device: device)
-    let path = NSBundle.mainBundle().pathForResource("ram", ofType: "png")!
-    let data = NSData(contentsOfFile: path)!
-    samplerState = Ram.defaultSampler(device)
-    super.init(device: device)
     
-    texture = try! textureLoader.newTextureWithData(data, options: nil)
-    load(device)
-  }
-  
-  var texture: MTLTexture?
-  var textureLoader: MTKTextureLoader
-  var samplerState: MTLSamplerState
-  
-  func load(device: MTLDevice) {
-    
-    let modelIOVertexDesc = MDLVertexDescriptor()
-    if let attribute = modelIOVertexDesc.attributes[0] as? MDLVertexAttribute {
-      attribute.name = MDLVertexAttributePosition
-      attribute.offset = 0
-      attribute.format = MDLVertexFormat.Float3
-      //        attribute.bufferIndex = 0
-    }
-    if let attribute = modelIOVertexDesc.attributes[1] as? MDLVertexAttribute {
-      attribute.name = MDLVertexAttributeOcclusionValue
-      attribute.offset = sizeof(Float) * 3
-      attribute.format = MDLVertexFormat.Float
-      //        attribute.bufferIndex = 0
-    }
-    if let attribute = modelIOVertexDesc.attributes[2] as? MDLVertexAttribute {
-      attribute.name = MDLVertexAttributeNormal
-      attribute.offset = sizeof(Float) * (3 + 1)
-      attribute.format = MDLVertexFormat.Float3
-      //        attribute.bufferIndex = 0
-    }
-    if let attribute = modelIOVertexDesc.attributes[3] as? MDLVertexAttribute {
-      attribute.name = MDLVertexAttributeTextureCoordinate
-      attribute.offset = sizeof(Float) * (3 + 1 + 3)
-      attribute.format = MDLVertexFormat.Float2
-      //        attribute.bufferIndex = 0
+    override init(device: MTLDevice) {
+        textureLoader = MTKTextureLoader(device: device)
+        let url = Bundle.main.url(forResource: "ram", withExtension: "png")!
+        let data = try! Data(contentsOf: url)
+        samplerState = Ram.defaultSampler(device: device)
+        super.init(device: device)
+        
+        texture = try! textureLoader.newTexture(data: data, options: nil)
+        load(device)
     }
     
-    if let layout = modelIOVertexDesc.layouts[0] as? MDLVertexBufferLayout {  // this zero correspons to  buffer index
-      layout.stride = sizeof(Float) * (3 + 1 + 3 + 2)
-    }
+    var texture: MTLTexture?
+    var textureLoader: MTKTextureLoader
+    var samplerState: MTLSamplerState
     
-    let url = NSBundle.mainBundle().URLForResource("ram", withExtension: "obj")!
-    
-    let allocator = MTKMeshBufferAllocator(device: device)
-    let asset = MDLAsset(URL: url, vertexDescriptor: modelIOVertexDesc, bufferAllocator: allocator)
-    
-    if let mesh = asset.objectAtIndex(0) as? MDLMesh {
-      
-      var subs = [MDLObject]()
-      for obj in mesh.submeshes {
-        if let sub = obj as? MDLObject {
-          subs.append(sub)
+    func load(_ device: MTLDevice) {
+        
+        let modelIOVertexDesc = MDLVertexDescriptor()
+        let sizeOfFloat = MemoryLayout<Float>.size
+        
+        if let attribute = modelIOVertexDesc.attributes[0] as? MDLVertexAttribute {
+            attribute.name = MDLVertexAttributePosition
+            attribute.offset = 0
+            attribute.format = MDLVertexFormat.float3
         }
-      }
-      mesh.generateAmbientOcclusionVertexColorsWithQuality(1.0, attenuationFactor: 0.1, objectsToConsider: [mesh], vertexAttributeNamed: MDLVertexAttributeOcclusionValue)
-    }
-    
-    do {
-      metalKitMeshes = try MTKMesh.newMeshesFromAsset(asset, device: device, sourceMeshes: nil)
-      
-//      MTKMesh.new
-    } catch _ {
-      print("problm")
-    }
-    
-//    metalKitMeshes = try! MTKMesh.newMeshesFromAsset(asset, device: device, sourceMeshes: nil)//meshesFromAsset(asset, device: device)
-    
-  }
-  
-  class func defaultSampler(device: MTLDevice) -> MTLSamplerState
-  {
-    let pSamplerDescriptor:MTLSamplerDescriptor? = MTLSamplerDescriptor();
-    
-    if let sampler = pSamplerDescriptor
-    {
-      sampler.minFilter             = MTLSamplerMinMagFilter.Nearest
-      sampler.magFilter             = MTLSamplerMinMagFilter.Nearest
-      sampler.mipFilter             = MTLSamplerMipFilter.Nearest
-      sampler.maxAnisotropy         = 1
-      sampler.sAddressMode          = MTLSamplerAddressMode.ClampToEdge
-      sampler.tAddressMode          = MTLSamplerAddressMode.ClampToEdge
-      sampler.rAddressMode          = MTLSamplerAddressMode.ClampToEdge
-      sampler.normalizedCoordinates = true
-      sampler.lodMinClamp           = 0
-      sampler.lodMaxClamp           = FLT_MAX
-    }
-    else
-    {
-      print(">> ERROR: Failed creating a sampler descriptor!")
-    }
-    return device.newSamplerStateWithDescriptor(pSamplerDescriptor!)
-  }
-  
-  override func render(renderEncoder: MTLRenderCommandEncoder) {
-    
-    guard metalKitMeshes.count != 0 else {return}
-    
-    for obj in metalKitMeshes {
-      if let mesh = obj as? MTKMesh {
-        if let vertexBuf = mesh.vertexBuffers.first {
-          renderEncoder.setVertexBuffer(vertexBuf.buffer, offset: vertexBuf.offset, atIndex: 0)
-          if let texture = texture {
-            renderEncoder.setFragmentTexture(texture, atIndex: 0)
-          }
-          renderEncoder.setFragmentSamplerState(samplerState, atIndex: 0)
-          for submesh in mesh.submeshes {
-            renderEncoder.drawIndexedPrimitives(submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
-          }
+        if let attribute = modelIOVertexDesc.attributes[1] as? MDLVertexAttribute {
+            attribute.name = MDLVertexAttributeOcclusionValue
+            attribute.offset = sizeOfFloat * 3
+            attribute.format = MDLVertexFormat.float
         }
-      }
+        if let attribute = modelIOVertexDesc.attributes[2] as? MDLVertexAttribute {
+            attribute.name = MDLVertexAttributeNormal
+            attribute.offset = sizeOfFloat * (3 + 1)
+            attribute.format = MDLVertexFormat.float3
+        }
+        if let attribute = modelIOVertexDesc.attributes[3] as? MDLVertexAttribute {
+            attribute.name = MDLVertexAttributeTextureCoordinate
+            attribute.offset = sizeOfFloat * (3 + 1 + 3)
+            attribute.format = MDLVertexFormat.float2
+        }
+        
+        if let layout = modelIOVertexDesc.layouts[0] as? MDLVertexBufferLayout {
+            layout.stride = sizeOfFloat * (3 + 1 + 3 + 2)
+        }
+        
+        let url = Bundle.main.url(forResource: "ram", withExtension: "obj")!
+        let allocator = MTKMeshBufferAllocator(device: device)
+        let asset = MDLAsset(url: url, vertexDescriptor: modelIOVertexDesc, bufferAllocator: allocator)
+        
+        if let mesh = asset.object(at: 0) as? MDLMesh {
+            
+            var subs = [MDLObject]()
+            for obj in mesh.submeshes! {
+                if let sub = obj as? MDLObject {
+                    subs.append(sub)
+                }
+            }
+            mesh.generateAmbientOcclusionVertexColors(withQuality: 1.0,
+                                                      attenuationFactor: 0.1,
+                                                      objectsToConsider: [mesh],
+                                                      vertexAttributeNamed: MDLVertexAttributeOcclusionValue)
+        }
+        
+        metalKitMeshes = try! MTKMesh.newMeshes(asset: asset, device: device).metalKitMeshes
     }
-  }
-  
+    
+    class func defaultSampler(device: MTLDevice) -> MTLSamplerState {
+        
+        let sampler = MTLSamplerDescriptor()
+        sampler.minFilter             = MTLSamplerMinMagFilter.nearest
+        sampler.magFilter             = MTLSamplerMinMagFilter.nearest
+        sampler.mipFilter             = MTLSamplerMipFilter.nearest
+        sampler.maxAnisotropy         = 1
+        sampler.sAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.tAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.rAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.normalizedCoordinates = true
+        sampler.lodMinClamp           = 0
+        sampler.lodMaxClamp           = Float.greatestFiniteMagnitude
+        
+        return device.makeSamplerState(descriptor: sampler)!
+    }
+    
+    override func render(renderEncoder: MTLRenderCommandEncoder) {
+        
+        guard !metalKitMeshes.isEmpty else {
+            return
+        }
+        
+        // Draw each mesh
+        for mesh in metalKitMeshes {
+            
+            if let vertexBuf = mesh.vertexBuffers.first {
+                
+                // Set vertices
+                renderEncoder.setVertexBuffer(vertexBuf.buffer, offset: vertexBuf.offset, index: 0)
+                
+                // Set texture
+                if let texture = texture {
+                    renderEncoder.setFragmentTexture(texture, index: 0)
+                }
+                
+                renderEncoder.setFragmentSamplerState(samplerState, index: 0)
+                
+                // Draw submeshes
+                mesh.submeshes.forEach { (submesh) in
+                    renderEncoder.drawIndexedPrimitives(type: submesh.primitiveType,
+                                                        indexCount: submesh.indexCount,
+                                                        indexType: submesh.indexType,
+                                                        indexBuffer: submesh.indexBuffer.buffer,
+                                                        indexBufferOffset: submesh.indexBuffer.offset)
+                }
+            }
+        }
+    }
+    
 }

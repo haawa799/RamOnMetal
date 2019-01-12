@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -651,11 +652,14 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <connections>
+                            <outlet property="delegate" destination="B8D-0N-5wS" id="Whw-wY-RaP"/>
+                        </connections>
                     </window>
                     <connections>
                         <segue destination="XfG-lQ-9wD" kind="relationship" relationship="window.shadowedContentViewController" id="cq2-FE-JQM"/>
@@ -673,29 +677,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="XI0-JI-MzJ">
+                            <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="XI0-JI-MzJ">
                                 <rect key="frame" x="0.0" y="0.0" width="120" height="80"/>
                                 <subviews>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="9qk-4t-m31">
                                         <rect key="frame" x="18" y="44" width="83" height="18"/>
-                                        <animations/>
                                         <buttonCell key="cell" type="check" title="Occlusion" bezelStyle="regularSquare" imagePosition="left" inset="2" id="2tm-Vf-KAU">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="occlusionSwitchValueChanged:" target="XfG-lQ-9wD" id="4Ee-NH-8lU"/>
+                                            <action selector="occlusionSwitchValueChangedWithSender:" target="XfG-lQ-9wD" id="NgO-Z9-0kC"/>
                                         </connections>
                                     </button>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="Cv6-hd-eWk">
-                                        <rect key="frame" x="18" y="24" width="68" height="18"/>
-                                        <animations/>
+                                        <rect key="frame" x="18" y="24" width="67" height="18"/>
                                         <buttonCell key="cell" type="check" title="Texture" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Rez-Qy-cWv">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="texturesSwitchValueChanged:" target="XfG-lQ-9wD" id="n6E-cm-Vm7"/>
+                                            <action selector="texturesSwitchValueChangedWithSender:" target="XfG-lQ-9wD" id="pey-PB-i4G"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -707,14 +709,12 @@
                                     <constraint firstAttribute="height" constant="80" id="Zoz-ri-osx"/>
                                     <constraint firstItem="Cv6-hd-eWk" firstAttribute="top" secondItem="9qk-4t-m31" secondAttribute="bottom" constant="6" symbolic="YES" id="scL-C3-gQf"/>
                                 </constraints>
-                                <animations/>
                             </visualEffectView>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="XI0-JI-MzJ" secondAttribute="bottom" id="4qR-JV-NDu"/>
                             <constraint firstItem="XI0-JI-MzJ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="ser-6E-tHb"/>
                         </constraints>
-                        <animations/>
                     </view>
                     <connections>
                         <outlet property="metalView" destination="m2S-Jp-Qdl" id="Wb7-Ss-ixs"/>

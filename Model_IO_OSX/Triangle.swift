@@ -18,6 +18,8 @@ class Triangle: Node {
     
     var vertices = [A, B, C]
     vertexCount = vertices.count
-    vertexBuffer = device.newBufferWithBytes(&vertices, length: vertices.count * sizeof(Vertex), options: MTLResourceOptions.CPUCacheModeDefaultCache)
+    vertexBuffer = device.makeBuffer(bytes: &vertices,
+                                     length: vertices.count * MemoryLayout<Vertex>.size,
+                                     options: [])
   }
 }

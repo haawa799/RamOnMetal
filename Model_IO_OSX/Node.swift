@@ -7,6 +7,7 @@
 //
 
 import MetalKit
+import simd
 
 protocol Transformable {
   var positionX:Float { get set }
@@ -23,7 +24,7 @@ protocol Transformable {
 
 extension Transformable {
   func modelMatrix() -> Matrix4 {
-    let matrix = Matrix4()
+    let matrix = Matrix4()!
     matrix.translate(positionX, y: positionY, z: positionZ)
     matrix.rotateAroundX(rotationX, y: rotationY, z: rotationZ)
     matrix.scale(scale, y: scale, z: scale)
@@ -45,7 +46,7 @@ class Node: NSObject, Transformable {
   var vertexBuffer: MTLBuffer?
   var vertexCount = 0
   
-  var metalKitMeshes = [AnyObject]()
+  var metalKitMeshes = [MTKMesh]()
   
   init(device: MTLDevice) {
     
