@@ -8,7 +8,7 @@
 
 import Cocoa
 import simd
-import Accelerate
+import GLKit.GLKMath
 
 /// This class is responsible for providing a uniformBuffer which will be passed to vertex shader. It holds n buffers. In case n == 3 for frame0 it will give buffer0 for frame1 - buffer1 for frame2 - buffer2 for frame3 - buffer0 and so on. It's user responsibility to make sure that GPU is not using that buffer before use. For details refer to wwdc session 604 (18:00).
 
@@ -30,9 +30,9 @@ class BufferProvider: NSObject {
   
   private(set) var indexOfAvaliableBuffer = 0
   private(set) var numberOfInflightBuffers: Int
-  private var buffers:[MTLBuffer]
+  private var buffers: [MTLBuffer]
   
-  private(set) var avaliableResourcesSemaphore: DispatchSemaphore//dispatch_semaphore_t
+  private(set) var avaliableResourcesSemaphore: DispatchSemaphore
   
   init(inFlightBuffers: Int, device: MTLDevice) {
     
@@ -53,7 +53,7 @@ class BufferProvider: NSObject {
     }
   }
   
-  func bufferWithMatrices(projectionMatrix: Matrix4, modelViewMatrix: Matrix4, b0: Bool, b1: Bool) -> MTLBuffer {
+  func bufferWithMatrices(projectionMatrix: GLKMatrix4, modelViewMatrix: Matrix4, b0: Bool, b1: Bool) -> MTLBuffer {
     
     let uniformBuffer = self.buffers[indexOfAvaliableBuffer]
     indexOfAvaliableBuffer += 1
@@ -62,7 +62,7 @@ class BufferProvider: NSObject {
     }
         
     let size = BufferProvider.matrixSize
-    memcpy(uniformBuffer.contents(), projectionMatrix.raw(), size)
+    memcpy(uniformBuffer.contents(), projectionMatrix.raw, size)
     memcpy(uniformBuffer.contents() + size, modelViewMatrix.raw(), size)
     
     let params = [b0, b1]
@@ -71,4 +71,15 @@ class BufferProvider: NSObject {
     return uniformBuffer
   }
   
+}
+
+extension GLKMatrix4 {
+    
+    var raw: [Float] {
+        var tmp = self.m
+        let array = [Float](UnsafeBufferPointer(start: &tmp.0,
+                                                count: MemoryLayout.size(ofValue: tmp)/MemoryLayout<Float>.size))
+        return array
+    }
+    
 }

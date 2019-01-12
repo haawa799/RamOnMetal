@@ -8,6 +8,7 @@
 
 import MetalKit
 import ModelIO
+import GLKit.GLKMath
 import simd
 
 final class ViewController: NSViewController, MTKViewDelegate {
@@ -99,8 +100,8 @@ final class ViewController: NSViewController, MTKViewDelegate {
     func setupScene() {
         scene = MyScene(device: device)
         viewMatrix!.translate(0.0, y: 0.0, z: -2)
-        scene.ram.rotationX = -Matrix4.degrees(toRad: 90)
-        scene.ram.rotationZ = -Matrix4.degrees(toRad: 45)
+        scene.ram.rotationX = -GLKMathDegreesToRadians(90)
+        scene.ram.rotationZ = -GLKMathDegreesToRadians(45)
     }
     
     override func viewDidLoad() {
@@ -127,10 +128,10 @@ final class ViewController: NSViewController, MTKViewDelegate {
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         // Change projection matrix, based on window size
-        let matrix = Matrix4.makePerspectiveViewAngle(Matrix4.degrees(toRad: 85.0),
-                                                      aspectRatio: Float(size.width / size.height),
-                                                      nearZ: 0.01,
-                                                      farZ: 100)
+        let matrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(85.0),
+                                               Float(size.width / size.height),
+                                               0.01,
+                                               100)
         scene.projectionMatrix = matrix
     }
     

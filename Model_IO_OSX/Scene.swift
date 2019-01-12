@@ -9,6 +9,7 @@
 import Foundation
 import MetalKit
 import simd
+import GLKit.GLKMath
 
 class Scene: NSObject, Transformable {
     
@@ -22,7 +23,7 @@ class Scene: NSObject, Transformable {
     var scale: Float     = 1.0
     
     var children: [Node]
-    var projectionMatrix = Matrix4()
+    var projectionMatrix = GLKMatrix4Identity
     var bufferProvider: BufferProvider
     
     var useTexture = false
@@ -64,7 +65,7 @@ class Scene: NSObject, Transformable {
         for child in children {
             let modelViewMatrix = child.modelMatrix()
             modelViewMatrix.multiplyLeft(sceneModelViewMatrix)
-            let uniformsBuffer = bufferProvider.bufferWithMatrices(projectionMatrix: projectionMatrix!,
+            let uniformsBuffer = bufferProvider.bufferWithMatrices(projectionMatrix: projectionMatrix,
                                                                    modelViewMatrix: modelViewMatrix,
                                                                    b0: useOcclusion,
                                                                    b1: useTexture)
