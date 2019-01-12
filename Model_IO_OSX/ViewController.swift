@@ -160,26 +160,8 @@ final class ViewController: NSViewController, MTKViewDelegate {
     
     // MARK: - OS X
     
-    private var deltaX: Float = 0
-    private var deltaY: Float = 0
-    private var lastPanLocation = NSPoint(x: 0, y: 0)
-    private let panSensivity: Float = 5.0
-    override func mouseDragged(with theEvent: NSEvent) {
-        super.mouseDragged(with: theEvent)
-        
-        let pointInWindow = theEvent.locationInWindow
-        
-        let xDelta = Float((lastPanLocation.x - pointInWindow.x)/self.view.bounds.width) * panSensivity
-        let yDelta = Float((lastPanLocation.y - pointInWindow.y)/self.view.bounds.height) * panSensivity
-        
-        print("x: \(xDelta)")
-        print("y: \(yDelta)")
-        print("")
-        
-        scene.ram.rotationZ -= yDelta
-        scene.ram.rotationY -= xDelta
-        
-        lastPanLocation = pointInWindow
+    override func rotate(with event: NSEvent) {
+        scene.rotationY -= event.rotation
     }
     
 }
