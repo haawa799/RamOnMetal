@@ -103,6 +103,14 @@ final class ViewController: NSViewController, MTKViewDelegate {
         scene.ram.rotationZ = -GLKMathDegreesToRadians(45)
     }
     
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        guard let metalView = metalView else {
+            return
+        }
+        mtkView(metalView, drawableSizeWillChange: metalView.bounds.size)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
