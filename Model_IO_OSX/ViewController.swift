@@ -9,7 +9,6 @@
 import MetalKit
 import ModelIO
 import GLKit.GLKMath
-import simd
 
 final class ViewController: NSViewController, MTKViewDelegate {
     
@@ -26,7 +25,7 @@ final class ViewController: NSViewController, MTKViewDelegate {
     private var scene: MyScene!
     private var pipelineState: MTLRenderPipelineState!
     private var depthStencilState: MTLDepthStencilState!
-    private var viewMatrix = Matrix4()
+    private var viewMatrix = GLKMatrix4Identity
     private let sizeOfFloat = MemoryLayout<Float>.size
     
     func setupMetal() {
@@ -99,7 +98,7 @@ final class ViewController: NSViewController, MTKViewDelegate {
     
     func setupScene() {
         scene = MyScene(device: device)
-        viewMatrix!.translate(0.0, y: 0.0, z: -2)
+        viewMatrix = GLKMatrix4Translate(viewMatrix, 0, 0, -2)
         scene.ram.rotationX = -GLKMathDegreesToRadians(90)
         scene.ram.rotationZ = -GLKMathDegreesToRadians(45)
     }
@@ -149,9 +148,8 @@ final class ViewController: NSViewController, MTKViewDelegate {
                              depthStencilState: depthStencilState,
                              pipelineState: pipelineState,
                              drawable: drawable,
-                             parentMVMatrix: float4x4(0.0),
                              viewMatrix: viewMatrix){ (buffer) -> Void in
-                    self.inflightDrawablesSemaphore.signal()
+                                self.inflightDrawablesSemaphore.signal()
                 }
             }
         }

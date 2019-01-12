@@ -9,5 +9,5 @@
 import Cocoa
 
 struct Vertex {
-  let x, y, z : Float
+    let x, y, z : Float
 }

@@ -9,17 +9,17 @@
 import MetalKit
 
 class Triangle: Node {
-  override init(device: MTLDevice) {
-    super.init(device: device)
-
-    let A = Vertex(x: -1.0, y: -1.0, z: 5.5)
-    let B = Vertex(x: 0.0, y: 1.0, z: 5.5)
-    let C = Vertex(x: 1.0, y: -1.0, z: 5.5)
-    
-    var vertices = [A, B, C]
-    vertexCount = vertices.count
-    vertexBuffer = device.makeBuffer(bytes: &vertices,
-                                     length: vertices.count * MemoryLayout<Vertex>.size,
-                                     options: [])
-  }
+    override init(device: MTLDevice) {
+        super.init(device: device)
+        
+        let A = Vertex(x: -1.0, y: -1.0, z: 5.5)
+        let B = Vertex(x: 0.0, y: 1.0, z: 5.5)
+        let C = Vertex(x: 1.0, y: -1.0, z: 5.5)
+        
+        var vertices = [A, B, C]
+        vertexCount = vertices.count
+        vertexBuffer = device.makeBuffer(bytes: &vertices,
+                                         length: vertices.count * MemoryLayout<Vertex>.size,
+                                         options: [])
+    }
 }

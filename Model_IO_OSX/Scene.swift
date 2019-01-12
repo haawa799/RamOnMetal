@@ -8,7 +8,6 @@
 
 import Foundation
 import MetalKit
-import simd
 import GLKit.GLKMath
 
 class Scene: NSObject, Transformable {
@@ -41,8 +40,7 @@ class Scene: NSObject, Transformable {
                 depthStencilState: MTLDepthStencilState?,
                 pipelineState: MTLRenderPipelineState,
                 drawable: CAMetalDrawable,
-                parentMVMatrix: float4x4,
-                viewMatrix: Matrix4?,
+                viewMatrix: GLKMatrix4?,
                 completionBlock: MTLCommandBufferHandler?) {
         
         bufferProvider.avaliableResourcesSemaphore.wait()
@@ -57,14 +55,14 @@ class Scene: NSObject, Transformable {
         }
         renderEncoder.setCullMode(MTLCullMode.front)
         
-        let sceneModelViewMatrix = modelMatrix()
+        var sceneModelViewMatrix = modelMatrix()
         if let viewMatrix = viewMatrix {
-            sceneModelViewMatrix.multiplyLeft(viewMatrix)
+            sceneModelViewMatrix = GLKMatrix4Multiply(viewMatrix, sceneModelViewMatrix)
         }
         
         for child in children {
-            let modelViewMatrix = child.modelMatrix()
-            modelViewMatrix.multiplyLeft(sceneModelViewMatrix)
+            var modelViewMatrix = child.modelMatrix()
+            modelViewMatrix = GLKMatrix4Multiply(sceneModelViewMatrix, modelViewMatrix)
             let uniformsBuffer = bufferProvider.bufferWithMatrices(projectionMatrix: projectionMatrix,
                                                                    modelViewMatrix: modelViewMatrix,
                                                                    b0: useOcclusion,
@@ -83,7 +81,6 @@ class Scene: NSObject, Transformable {
         
         commandBuffer.present(drawable)
         commandBuffer.commit()
-        
     }
     
 }

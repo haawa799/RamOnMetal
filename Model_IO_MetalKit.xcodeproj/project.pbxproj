@@ -19,7 +19,6 @@
 		4314CE671B2B858400010FFA /* Ram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4314CE5F1B2B858400010FFA /* Ram.swift */; };
 		4314CE681B2B858400010FFA /* Vertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4314CE601B2B858400010FFA /* Vertex.swift */; };
 		4314CE691B2B858400010FFA /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4314CE611B2B858400010FFA /* Shaders.metal */; };
-		4359F47C1B372811000BF4A8 /* Matrix4.m in Sources */ = {isa = PBXBuildFile; fileRef = 4359F47B1B372811000BF4A8 /* Matrix4.m */; };
 		439B38451B35ED710069E2C0 /* BufferProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439B38441B35ED710069E2C0 /* BufferProvider.swift */; };
 		43C34A441BF3533000898399 /* ram.png in Resources */ = {isa = PBXBuildFile; fileRef = 43C34A431BF3533000898399 /* ram.png */; };
 		43D17CDF1B4298130079A691 /* ram.obj in Resources */ = {isa = PBXBuildFile; fileRef = 43D17CDD1B4298130079A691 /* ram.obj */; };
@@ -40,14 +39,11 @@
 		4314CE5F1B2B858400010FFA /* Ram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ram.swift; sourceTree = "<group>"; };
 		4314CE601B2B858400010FFA /* Vertex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vertex.swift; sourceTree = "<group>"; };
 		4314CE611B2B858400010FFA /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		4359F47A1B372811000BF4A8 /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix4.h; sourceTree = "<group>"; };
-		4359F47B1B372811000BF4A8 /* Matrix4.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Matrix4.m; sourceTree = "<group>"; };
 		439B38441B35ED710069E2C0 /* BufferProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferProvider.swift; sourceTree = "<group>"; };
 		43C34A431BF3533000898399 /* ram.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ram.png; sourceTree = "<group>"; };
 		43D17CDD1B4298130079A691 /* ram.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ram.obj; sourceTree = "<group>"; };
 		43D17CE11B4298280079A691 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		43D17CE21B4298280079A691 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		43D17CE31B4298280079A691 /* Model_IO_OSX-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Model_IO_OSX-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +91,6 @@
 				4314CE611B2B858400010FFA /* Shaders.metal */,
 				4314CE471B2B83D900010FFA /* ViewController.swift */,
 				439B38441B35ED710069E2C0 /* BufferProvider.swift */,
-				4359F47A1B372811000BF4A8 /* Matrix4.h */,
-				4359F47B1B372811000BF4A8 /* Matrix4.m */,
 			);
 			path = Model_IO_OSX;
 			sourceTree = "<group>";
@@ -125,7 +119,6 @@
 				4314CE4B1B2B83D900010FFA /* Main.storyboard */,
 				43D17CE11B4298280079A691 /* AppDelegate.swift */,
 				43D17CE21B4298280079A691 /* Info.plist */,
-				43D17CE31B4298280079A691 /* Model_IO_OSX-Bridging-Header.h */,
 			);
 			path = "Supporting files";
 			sourceTree = "<group>";
@@ -203,7 +196,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				43D17CE41B4298280079A691 /* AppDelegate.swift in Sources */,
-				4359F47C1B372811000BF4A8 /* Matrix4.m in Sources */,
 				439B38451B35ED710069E2C0 /* BufferProvider.swift in Sources */,
 				4314CE481B2B83D900010FFA /* ViewController.swift in Sources */,
 				4314CE681B2B858400010FFA /* Vertex.swift in Sources */,
@@ -344,7 +336,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haawa.Model-IO-OSX";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Model_IO_OSX/Supporting files/Model_IO_OSX-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -359,7 +350,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haawa.Model-IO-OSX";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "Model_IO_OSX/Supporting files/Model_IO_OSX-Bridging-Header.h";
 			};
 			name = Release;
 		};
