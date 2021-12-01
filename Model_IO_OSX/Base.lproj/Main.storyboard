@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -677,11 +677,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="XI0-JI-MzJ">
+                            <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" material="menu" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="XI0-JI-MzJ">
                                 <rect key="frame" x="0.0" y="0.0" width="120" height="80"/>
                                 <subviews>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="9qk-4t-m31">
-                                        <rect key="frame" x="18" y="44" width="83" height="18"/>
+                                        <rect key="frame" x="18" y="43" width="87" height="18"/>
                                         <buttonCell key="cell" type="check" title="Occlusion" bezelStyle="regularSquare" imagePosition="left" inset="2" id="2tm-Vf-KAU">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -691,7 +691,7 @@
                                         </connections>
                                     </button>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="Cv6-hd-eWk">
-                                        <rect key="frame" x="18" y="24" width="67" height="18"/>
+                                        <rect key="frame" x="18" y="21" width="87" height="18"/>
                                         <buttonCell key="cell" type="check" title="Texture" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Rez-Qy-cWv">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -704,6 +704,8 @@
                                 <constraints>
                                     <constraint firstItem="9qk-4t-m31" firstAttribute="leading" secondItem="XI0-JI-MzJ" secondAttribute="leading" constant="20" symbolic="YES" id="CgI-Ll-fOw"/>
                                     <constraint firstAttribute="width" constant="120" id="Dar-RA-x0d"/>
+                                    <constraint firstAttribute="trailing" secondItem="9qk-4t-m31" secondAttribute="trailing" constant="15" id="GS7-VF-5eI"/>
+                                    <constraint firstAttribute="trailing" secondItem="Cv6-hd-eWk" secondAttribute="trailing" constant="15" id="Lxb-Qe-NL2"/>
                                     <constraint firstItem="Cv6-hd-eWk" firstAttribute="leading" secondItem="9qk-4t-m31" secondAttribute="leading" id="SlS-9L-qro"/>
                                     <constraint firstItem="9qk-4t-m31" firstAttribute="top" secondItem="XI0-JI-MzJ" secondAttribute="top" constant="20" symbolic="YES" id="Z9C-Mt-c0J"/>
                                     <constraint firstAttribute="height" constant="80" id="Zoz-ri-osx"/>
